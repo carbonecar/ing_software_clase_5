@@ -4,7 +4,7 @@ services:
     runtime: python
     plan: free  # o 'starter' para $7/mes
     buildCommand: pip install -r requirements.txt
-    startCommand: python main.py
+    startCommand: fastapi run main.py
     envVars:
       - key: PORT
         value: 8000
