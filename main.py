@@ -1,10 +1,16 @@
-from fastapi import FastAPI, Request
+"""
+    Servidor de ejemplo para la práctica de FastAPI
+"""
 import os
-
 from pydantic import BaseModel
+from fastapi import FastAPI
+
 
 
 class ArchivoRequest(BaseModel):
+    """
+        Modelo para la solicitud de creación de archivo
+    """
     name: str
     content: str
 
@@ -17,6 +23,9 @@ app = FastAPI(
 
 @app.get("/")
 async def prueba_root():
+    """
+    Endpoint de prueba en la raíz
+    """
     return {"message": "Accediste al endpoint de prueba"}
 
 
@@ -34,20 +43,13 @@ async def leer_archivo(nombre_archivo: str):
     Lee el contenido de un archivo específico
     """
     ruta_archivo = os.path.join("./files", nombre_archivo)
-    
+
     if not os.path.isfile(ruta_archivo):
         return {"error": "El archivo no existe"}
-    
+
     with open(ruta_archivo, "r") as archivo:
-        contenido = archivo.read()
-    
+        contenido = archivo.read()    
     return {"nombre_archivo": nombre_archivo, "contenido": contenido}
-
-
-## Quiero que el request tenga dos campos en el cuerpo, name y content y los mismos se vean en el swagger
-
-    
-
 
 @app.post("/files")
 async def crear_archivo(request: ArchivoRequest):
@@ -57,14 +59,12 @@ async def crear_archivo(request: ArchivoRequest):
     data = request.dict()
     nombre_archivo = data.get("name")
     contenido = data.get("content", "")
-    
     if not nombre_archivo:
         return {"error": "Se debe proporcionar un nombre de archivo"}
-    
+
     ruta_archivo = os.path.join("./files", nombre_archivo)
-    
+
     with open(ruta_archivo, "w") as archivo:
         archivo.write(contenido)
-    
-    return {"message": f"Archivo '{nombre_archivo}' creado exitosamente"}
 
+    return {"message": f"Archivo '{nombre_archivo}' creado exitosamente"}
